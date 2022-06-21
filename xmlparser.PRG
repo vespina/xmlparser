@@ -3,7 +3,7 @@
 *
 * Autor: Victor Espina
 * Version: 1.0
-* Frcha: Jun 2019
+* Fecha: Jun 2019
 *
 * USO:
 * DO xmlparser
