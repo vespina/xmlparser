@@ -33,7 +33,18 @@ This will create a public object called xmlParser. If you prefer to create local
     ?oData.node.attribute
     
 
+#### To parse a XML string
+    LOCAL oData
+    oData = xmlParser.ParseString("<document><hello>World</hello></document>")
+    IF ISNULL(oData)
+      ?xmlParser.lastError
+      RETURN
+    ENDIF
+    ?oData.Hello -> "World"
+
+
 ### EXAMPLE #1
+    ** TEST1.XML
     <document>
        <customer id="001"  name="VICTOR ESPINA" />
        <invoices>
@@ -50,6 +61,7 @@ This will create a public object called xmlParser. If you prefer to create local
       </invoices>
     </document>
     
+    oData = XmlParser.Parse("test1.xml")
     ?oData.Customer.Id.   --> "001"
     ?oData.Customer.Name  --> "VICTOR ESPINA"
     ?oData.Invoices.Count --> 2
@@ -59,6 +71,7 @@ This will create a public object called xmlParser. If you prefer to create local
 
 
 ### EXAMPLE #2
+    TEXT TO cXML NOSHOW
     <?xml version="1.0" encoding="UTF-8"?>
     <ns1:Envelope xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.w3.org/2001/12/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/12/soap-envelope http://www.codaladi.org/directorio/cod_ver_1.8.0.xsd">
        <ns1:CertOrigin>
@@ -76,7 +89,9 @@ This will create a public object called xmlParser. If you prefer to create local
           </CODEH>
        </ns1:CertOrigin>
     </ns1:Envelope>
-
+    ENDTEXT
+    
+    oData = XmlParser.parseString(cXML)
     ?oData.ns1_envelope.xmlns_ds --> "http://www.w3.org/2000/09/xmldsig#"
     ?oNS1_Envelope.ns1_CertOrigin.CODEH.CODExporter.COD.id  --> "CODEH"
     ?oNS1_Envelope.ns1_CertOrigin.CODEH.CODExporter.COD.CODVer  --> "1.8.0"
@@ -88,5 +103,7 @@ This will create a public object called xmlParser. If you prefer to create local
 
 |Date         |User|Description|
 |-------------|----|-----------|
+|Jul, 2022  |VES |New parseString() method. Fix on collection's detection]
 |Jun, 2019  |VES |Version 1.0|
+
 

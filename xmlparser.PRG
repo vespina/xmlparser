@@ -2,8 +2,8 @@
 * Parser XML para VFP (6.0 o superior)
 *
 * Autor: Victor Espina
-* Version: 1.0
-* Fecha: Jun 2019
+* Version: 1.1
+* Fecha: Jul 2022
 *
 * USO:
 * DO xmlparser
@@ -38,6 +38,7 @@
 *
 *
 * CHANGE HISTORY
+* Jul 29, 2022 VES     ParseString method. Fix on collection's detection. 
 * Jun 2, 2019  VES     Version inicial
 *
 SET PROC TO xmlParser ADDITIVE
@@ -80,11 +81,20 @@ DEFINE CLASS xmlParser AS Custom
        cRootTagName = oRootNode.tagName
        oMainNode = oXML.selectSingleNode("//"+cRootTagName)
    
-       oData = THIS._parseNode(oRootNode)
+       oData = THIS._parseNode(oMainNode)
    
        RETURN oData
      ENDPROC
-   
+
+
+     PROCEDURE parseString(pcString)
+     	LOCAL cTempFile,oResult
+     	cTempFile = ADDBS(GETENV("TEMP")) + "$" + SYS(2015) + ".XML"  
+     	STRTOFILE(pcString, cTempFile)
+     	oResult = THIS.Parse(cTempFile)
+     	ERASE (cTempFile)
+     	RETURN oResult
+     	
    
      HIDDEN PROCEDURE _parseNode(poNode)
         LOCAL oData,cNodeName,i,oNode,oAttr,lHasChildren,cAttrName,cNodeName
@@ -97,19 +107,30 @@ DEFINE CLASS xmlParser AS Custom
         lIsCollection = .F.
    
         IF lHasChildren
-          lIsCollection = .T.    && Asumimos que es una coleccion a menos que encontremos un hijo con otro nombre
+          * Asumimos que es una coleccion a menos que los hijos tengan distinto nombre
+          * o el nombre del unico hijo no sea el plural del padre
+          lIsCollection = .T.
+          LOCAL cChildrenName
+          cChildrenName = ""    
           FOR i = 1 TO poNode.childNodes.Length
             oNode = poNode.childNodes.Item(i - 1)
             IF oNode.nodeType = 8  && Comentario
               LOOP
             ENDIF
-            IF !(LOWER(oNode.nodeName) + "s" == cNodeName)
-              lIsCollection = .F.
-              EXIT
+            IF EMPTY(cChildrenName)
+            	cChildrenName = LOWER(oNode.nodeName)
+            ELSE
+            	IF NOT LOWER(oNode.nodeName) == cChildrenName
+            		cChildrenName = ""
+            		EXIT
+            	ENDIF
             ENDIF
           ENDFOR
+          IF EMPTY(cChildrenName) AND !(cChildrenName + "s" == cNodeName)
+              lIsCollection = .F.
+          ENDIF          
         ENDIF
-        oData = IIF(lISCollection, CREATEOBJECT("XmlParserCollection"), THIS._createEmpty())
+        oData = IIF(lISCollection, CREATEOBJECT("xmlParserCollection"), THIS._createEmpty())
         IF lIsCollection
           oCollection = oData
         ENDIF
