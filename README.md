@@ -1,7 +1,7 @@
 # XMLPARSER.PRG
 **XML parser for VFP**
 
-Version: 1.00
+Version: 1.1
 
 Author: V. Espina
 
