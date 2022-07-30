@@ -126,7 +126,7 @@ DEFINE CLASS xmlParser AS Custom
             	ENDIF
             ENDIF
           ENDFOR
-          IF EMPTY(cChildrenName) AND !(cChildrenName + "s" == cNodeName)
+          IF EMPTY(cChildrenName) OR !(cChildrenName + "s" == cNodeName)
               lIsCollection = .F.
           ENDIF          
         ENDIF
