@@ -2,8 +2,8 @@
 * Parser XML para VFP (6.0 o superior)
 *
 * Autor: Victor Espina
-* Version: 1.1
-* Fecha: Jun 2019
+* Version: 1.2
+* Fecha: Dic 2022
 *
 * USO:
 * DO xmlparser
@@ -38,6 +38,7 @@
 *
 *
 * CHANGE HISTORY
+* Dic 7, 2022  VES     Correccion para caso de nodos con prefijo
 * Ago 9, 2022  VES     Mejoras varias
 * Jun 2, 2019  VES     Version inicial
 *
@@ -241,6 +242,7 @@ DEFINE CLASS xmlParser AS Custom
    
      HIDDEN PROCEDURE _addProperty(poTarget, pcProperty, puValue)
        LOCAL cType
+       pcProperty = CHRTRAN(CHRT(pcProperty,":-","__"), "#", "")
        cType = TYPE("poTarget." + pcProperty)
        IF cType<>"U"
           IF cType = "C"
@@ -266,7 +268,6 @@ DEFINE CLASS xmlParser AS Custom
 	          cPropList = cPropList + IIF(i=1,"",",") + cProp
 	        ENDIF
 	       ENDFOR
-	       pcProperty = CHRTRAN(CHRT(pcProperty,":-","__"), "#", "")
 	       cPropList = cPropList + "," + LOWER(pcProperty)
 	       LOCAL oClone
 	       oClone = THIS._createEmpty(cPropList)
