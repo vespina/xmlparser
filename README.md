@@ -1,7 +1,7 @@
 # XMLPARSER.PRG
 **XML parser for VFP**
 
-Version: 1.2
+Version: 1.3
 
 Author: V. Espina
 
@@ -103,6 +103,7 @@ This will create a public object called xmlParser. If you prefer to create local
 
 |Date         |User|Description|
 |-------------|----|-----------|
+[Jul, 2023  |VES |Version 1.3. VFPLEGACY.PRG integrated on XMLPARSER.PRG|
 [Dic, 2022  |VES |Version 1.2. Fix error with prefixed nodes|
 [Ago, 2022  |VES |Version 1.1|
 |Ago, 2022  |VES |Improved collection's detection. CDATA support|
